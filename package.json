@@ -17,7 +17,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "resend": "^6.12.2"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
