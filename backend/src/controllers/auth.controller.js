@@ -1,6 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import { sendWelcomeEmail } from "../emails/emailHanlders.js";
 
 // Auth Controller: Handles user registration and authentication.
 // Uses JWT for session management and bcrypt for password hashing.
@@ -40,9 +41,22 @@ export const signup = async (req, res) => {
     if (newUser) {
       await newUser.save();
       generateToken(newUser._id, res);
+
       res
         .status(201)
         .json({ message: "User created successfully", user: newUser });
+      try {
+        // Non-blocking email step: account creation should still succeed
+        // even when email credentials are missing or email provider fails.
+        sendWelcomeEmail({
+          to: "shahzeb.jadoon@acrosoft.io",
+          name: newUser.fullName,
+        }).catch((error) => {
+          console.error("Failed to send welcome email:", error.message);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       return res.status(400).json({ message: "Failed to create user" });
     }
