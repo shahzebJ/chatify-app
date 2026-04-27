@@ -2,6 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { sendWelcomeEmail } from "../emails/emailHanlders.js";
+import cloudinary from "../lib/cloudiary.js";
 
 // Auth Controller: Handles user registration and authentication.
 // Uses JWT for session management and bcrypt for password hashing.
@@ -89,7 +90,32 @@ export const signin = async (req, res) => {
 };
 
 export const signout = async (req, res) => {
-  res.clearCookie("token");
-  res.clearCookie("jwt");
-  res.status(200).json({ message: "Logged out successfully" });
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error, "Error in signout controller");
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { profilePicture } = req.body;
+    if (!profilePicture)
+      return res.status(400).json({ message: "Profile picture is required" });
+    const userId = req.user._id;
+    const uploadResponse = await cloudinary.uploader.upload(profilePicture);
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { profilePicture: uploadResponse.secure_url },
+      { new: true },
+    );
+
+    res.status(200).json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error(error, "Error in update profile controller");
+    res.status(500).json({ message: "Internal server error" });
+  }
 };

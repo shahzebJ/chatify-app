@@ -9,4 +9,7 @@ export const ENV = {
   resendApiKey: process.env.RESEND_API_KEY,
   emailFrom: process.env.EMAIL_FROM,
   emailFromName: process.env.EMAIL_FROM_NAME,
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
 };

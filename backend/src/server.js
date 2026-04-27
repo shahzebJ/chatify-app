@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectToDB from "./lib/db.js";
 import path from "path";
@@ -19,6 +20,7 @@ app.use(
 );
 
 app.use(express.json()); // req.body
+app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 connectToDB();
 
